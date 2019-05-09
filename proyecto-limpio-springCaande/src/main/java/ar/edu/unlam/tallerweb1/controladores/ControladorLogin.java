@@ -1,13 +1,23 @@
 package ar.edu.unlam.tallerweb1.controladores;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import ar.edu.unlam.tallerweb1.modelo.Usuario;
@@ -39,7 +49,7 @@ public class ControladorLogin {
 	// Este metodo escucha la URL validar-login siempre y cuando se invoque con metodo http POST
 	// El método recibe un objeto Usuario el que tiene los datos ingresados en el form correspondiente y se corresponde con el modelAttribute definido en el
 	// tag form:form
-	@RequestMapping(path = "/validar-login", method = RequestMethod.POST)
+	@RequestMapping(path ="/validar-login", method = RequestMethod.POST)
 	public ModelAndView validarLogin(@ModelAttribute("usuario") Usuario usuario, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 
@@ -67,4 +77,42 @@ public class ControladorLogin {
 	public ModelAndView inicio() {
 		return new ModelAndView("redirect:/login");
 	}
+	
+	@RequestMapping ("/hola")
+	public ModelAndView irAgregarPersona(){
+		return new ModelAndView ("hola");
+	}
+	@RequestMapping("/saludo") //EL NOMBRE DEL PATH NO TIENE NA K VER CON LA VISTA
+	public ModelAndView holiAmigo(@RequestParam(value="nombrePersona") String firstName,
+									@RequestParam(value="apellidoPersona") String apellido)
+			{
+		ModelMap model = new ModelMap();
+		model.put("nombrePersona",firstName);
+		model.put("apellidoPersona", apellido);
+		return new ModelAndView ("saludo",model);
+	}
+/*	@RequestMapping("/saludo") //EL NOMBRE DEL PATH NO TIENE NA K VER CON LA VISTA
+	public ModelAndView otroMetodo()
+			{
+		ModelMap model = new ModelMap();
+
+		return new ModelAndView ("saludo",model);
+	}*/
+	@RequestMapping("/saludo/{nombrePersona}/{apellidoPersona}")
+	public ModelAndView holi2(@PathVariable("nombrePersona") String firstName, @PathVariable("apellidoPersona") String apellido)
+	{
+		ModelMap model = new ModelMap();
+		return new ModelAndView("saludo",model);
+	}
+	@RequestMapping("/repeticion/{palabra}/{numero}")
+		public ModelAndView repetir(@PathVariable("palabra") String word, @PathVariable("numero") Integer num){
+			List <String> palabras = new ArrayList<String>();
+			for (int i=0; i<num; i++){
+				palabras.add(word);
+			}
+			ModelMap model = new ModelMap();
+			model.put("listaP", palabras);
+			return new ModelAndView("repeticion",model);
+	}
+	
 }
